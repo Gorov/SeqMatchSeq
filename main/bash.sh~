@@ -1,0 +1,4 @@
+for dropoutP in $(seq 0.275 0.025 0.4)
+do
+	CUDA_VISIBLE_DEVICES=0 th main.lua -task squad -model boundaryResMLSTMPtrT -dropoutP $dropoutP -mem_dim 300 -gpu 1 -expIdx 25$dropoutP -res_layers 1 -max_epochs 15 -learning_rate 0.002 -comp_type submul -seed 25$dropoutP -lstm_layers 3 
+done

@@ -1,8 +1,6 @@
 --[[
 Copyright 2015 Singapore Management University (SMU). All Rights Reserved.
-
 Permission to use, copy, modify and distribute this software and its documentation for purposes of research, teaching and general academic pursuits, without fee and without a signed licensing agreement, is hereby granted, provided that the above copyright statement, this paragraph and the following paragraph on disclaimer appear in all copies, modifications, and distributions.  Contact Singapore Management University, Intellectual Property Management Office at iie@smu.edu.sg, for commercial licensing opportunities.
-
 This software is provided by the copyright holder and creator “as is” and any express or implied warranties, including, but not Limited to, the implied warranties of merchantability and fitness for a particular purpose are disclaimed.  In no event shall SMU or the creator be liable for any direct, indirect, incidental, special, exemplary or consequential damages, however caused arising in any way out of the use of this software.
 ]]
 require 'nngraph'
@@ -21,6 +19,8 @@ include '../models/pointNet.lua'
 
 include '../nn/CAddRepTable.lua'
 include '../nn/DMax.lua'
+include '../nn/MaskedSoftMax.lua'
+include '../nn/BLinear.lua'
 
 include '../snli/mLSTM.lua'
 include '../snli/compAggSNLI.lua'
@@ -29,6 +29,12 @@ include '../squad/boundaryMPtr.lua'
 include '../squad/sequenceMPtr.lua'
 
 include '../wikiqa/compAggWikiqa.lua'
+
+include '../webqsp/compAggWebqsp.lua'
+include '../webqsp/compAggWebqspQs.lua'
+include '../webqsp/compAggWebqspQsPos.lua'
+
+require 'rnn'
 
 print ("require done !")
 
@@ -60,8 +66,16 @@ cmd:option('-grad','adamax','gradient descent method')
 
 cmd:option('-log', 'nothing', 'log message')
 
+cmd:option('-gpu', -1, 'gpu index')
 
 local opt = cmd:parse(arg)
+if opt.gpu ~= -1 then
+    require 'cutorch'
+    require 'cunn'
+    require 'cudnn'
+    cutorch.setDevice(opt.gpu)
+    cutorch.manualSeed(opt.seed*1000)
+end
 torch.manualSeed(opt.seed)
 torch.setnumthreads(1)
 
@@ -74,7 +88,7 @@ print ("Vocal size: "..opt.numWords)
 print('loading data ..')
 local train_dataset = tr:loadData('train', opt.task)
 local test_dataset
-if opt.task == 'snli' or opt.task == 'wikiqa' then test_dataset = tr:loadData('test', opt.task) end
+if opt.task == 'snli' or opt.task == 'wikiqa' or opt.task == 'webqsp' then test_dataset = tr:loadData('test', opt.task) end
 local dev_dataset = tr:loadData('dev', opt.task)
 torch.manualSeed(opt.seed)
 
@@ -92,7 +106,7 @@ for i = 1, opt.max_epochs do
     if i == opt.max_epochs then
         model.params:copy( model.best_params )
         recordDev = model:predict_dataset(dev_dataset)
-        if opt.task == 'snli' or opt.task == 'wikiqa' then recordTest   = model:predict_dataset(test_dataset) end
+        if opt.task == 'snli' or opt.task == 'wikiqa' or opt.task == 'webqsp' then recordTest   = model:predict_dataset(test_dataset) end
         recordTrain  = model:predict_dataset(train_dataset)
         model:save('../trainedmodel/', opt, {recordDev, recordTest, recordTrain}, i)
     end

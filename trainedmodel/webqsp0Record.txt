@@ -1,0 +1,171 @@
+expIdx	0
+max_epochs	20
+seed	123
+batch_size	50
+reg	0
+grad	adamax
+log	nothing
+model	compAggWebqspQs
+dropoutP	0.1
+gpu	1
+numWords	3148
+task	webqsp
+num_classes	3
+mem_dim	150
+wvecDim	300
+emb_lr	0
+preEmb	glove
+learning_rate	0.002
+emb_partial	true
+comp_type	concate
+att_dim	300
+lr_decay	0.95
+webqsp: 1: 0.28684050939964, 
+webqsp: 2: 0.53244390539721, 
+webqsp: 3: 0.64342025469982, 
+webqsp: 4: 0.68223165554882, 
+webqsp: 5: 0.72043662825955, 
+webqsp: 6: 0.74469375379018, 
+webqsp: 7: 0.75985445724682, 
+webqsp: 8: 0.767131594906, 
+webqsp: 9: 0.7707701637356, 
+webqsp: 10: 0.7689508793208, 
+webqsp: 11: 0.77986658580958, 
+expIdx	0
+max_epochs	20
+seed	123
+batch_size	50
+reg	0
+grad	adamax
+log	nothing
+model	compAggWebqspQs
+dropoutP	0.1
+gpu	1
+numWords	3148
+task	webqsp
+num_classes	3
+mem_dim	150
+wvecDim	300
+emb_lr	0
+preEmb	glove
+learning_rate	0.002
+emb_partial	true
+comp_type	concate
+att_dim	300
+lr_decay	0.95
+webqsp: 1: 0.22115384615385, 
+webqsp: 2: 0.33012820512821, 
+webqsp: 3: 0.48557692307692, 
+webqsp: 4: 0.54647435897436, 
+webqsp: 5: 0.65544871794872, 
+webqsp: 6: 0.69551282051282, 
+webqsp: 7: 0.71474358974359, 
+webqsp: 8: 0.7275641025641, 
+webqsp: 9: 0.73717948717949, 
+webqsp: 10: 0.74038461538462, 
+webqsp: 11: 0.75480769230769, 
+webqsp: 12: 0.75480769230769, 
+webqsp: 13: 0.76762820512821, 
+webqsp: 14: 0.76442307692308, 
+webqsp: 15: 0.76121794871795, 
+webqsp: 16: 0.75480769230769, 
+webqsp: 17: 0.76762820512821, 
+webqsp: 18: 0.78044871794872, 
+webqsp: 19: 0.78044871794872, 
+webqsp: 20: 0.77564102564103, 
+webqsp: 20: 0.78044871794872, 0.77198302001213, 0.91292134831461, 
+expIdx	0
+max_epochs	20
+seed	123
+batch_size	50
+reg	0
+grad	adamax
+log	nothing
+model	compAggWebqspQs
+dropoutP	0.1
+gpu	1
+numWords	3148
+task	webqsp
+num_classes	3
+mem_dim	300
+wvecDim	300
+emb_lr	0
+preEmb	glove
+learning_rate	0.002
+emb_partial	true
+comp_type	concate
+att_dim	300
+lr_decay	0.95
+webqsp: 1: 0.31891025641026, 
+webqsp: 2: 0.55448717948718, 
+webqsp: 3: 0.6650641025641, 
+webqsp: 4: 0.73237179487179, 
+webqsp: 5: 0.70512820512821, 
+webqsp: 6: 0.74038461538462, 
+webqsp: 7: 0.76923076923077, 
+webqsp: 8: 0.77403846153846, 
+webqsp: 9: 0.7724358974359, 
+webqsp: 10: 0.77564102564103, 
+webqsp: 11: 0.78365384615385, 
+webqsp: 12: 0.78205128205128, 
+webqsp: 13: 0.78685897435897, 
+webqsp: 14: 0.7900641025641, 
+webqsp: 15: 0.77724358974359, 
+webqsp: 16: 0.78044871794872, 
+webqsp: 17: 0.77724358974359, 
+webqsp: 18: 0.77403846153846, 
+webqsp: 19: 0.77724358974359, 
+webqsp: 20: 0.78205128205128, 
+webqsp: 20: 0.7900641025641, 0.7883565797453, 0.93378812199037, 
+expIdx	0
+max_epochs	20
+seed	123
+batch_size	50
+reg	0
+grad	adamax
+log	nothing
+model	compAggWebqspQsPos
+dropoutP	0.1
+gpu	1
+numWords	3148
+task	webqsp
+num_classes	3
+mem_dim	300
+wvecDim	300
+emb_lr	0
+preEmb	glove
+learning_rate	0.002
+emb_partial	true
+comp_type	concate
+att_dim	300
+lr_decay	0.95
+webqsp: 1: 0.28525641025641, 
+webqsp: 2: 0.43589743589744, 
+webqsp: 3: 0.51121794871795, 
+webqsp: 4: 0.58974358974359, 
+webqsp: 5: 0.65384615384615, 
+webqsp: 6: 0.68910256410256, 
+expIdx	0
+max_epochs	20
+seed	123
+batch_size	20
+reg	0
+grad	adamax
+log	nothing
+model	compAggWebqspQsPos
+dropoutP	0
+gpu	1
+numWords	3148
+task	webqsp
+num_classes	3
+mem_dim	300
+wvecDim	300
+emb_lr	0
+preEmb	glove
+learning_rate	0.002
+emb_partial	true
+comp_type	concate
+att_dim	300
+lr_decay	0.95
+webqsp: 1: 0.42147435897436, 
+webqsp: 2: 0.55288461538462, 
