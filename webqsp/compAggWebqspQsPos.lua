@@ -37,25 +37,24 @@ function compAggWebqspQsPos:__init(config)
     self.answer_pool = torch.load('../data/webqsp/answer_pool.t7')
 
     self.proj_module_master = self:new_proj_module()
-    self.att_module_master = self:new_match_module()
 
     if self.comp_type == 'concate' then
-        self.sim_sg_module = self:new_sim_con_module()
+        self.att_module_master = self:new_sim_con_module()
     elseif self.comp_type == 'sub' then
-        self.sim_sg_module = self:new_sim_sub_module()
+        self.att_module_master = self:new_sim_sub_module()
     elseif self.comp_type == 'mul' then
-        self.sim_sg_module = self:new_sim_mul_module()
+        self.att_module_master = self:new_sim_mul_module()
     elseif self.comp_type == 'weightsub' then
-        self.sim_sg_module = self:new_sim_weightsub_module()
+        self.att_module_master = self:new_sim_weightsub_module()
     elseif self.comp_type == 'weightmul' then
-        self.sim_sg_module = self:new_sim_weightmul_module()
+        self.att_module_master = self:new_sim_weightmul_module()
     elseif self.comp_type == 'bilinear' then
-        self.sim_sg_module = self:new_sim_bilinear_module()
+        self.att_module_master = self:new_sim_bilinear_module()
     elseif self.comp_type == 'submul' then
-        self.sim_sg_module = self:new_sim_submul_module()
+        self.att_module_master = self:new_sim_submul_module()
     elseif self.comp_type == 'cos' then
         self.cov_dim = 2
-        self.sim_sg_module = self:new_sim_cos_module()
+        self.att_module_master = self:new_sim_cos_module()
     else
         error("The word matching method is not provided!!")
     end
@@ -166,22 +165,46 @@ end
 
 
 function compAggWebqspQsPos:new_sim_con_module()
-    local inputq, inputa = nn.Identity()(), nn.Identity()()
-    local output = nn.ReLU()(nn.Linear(2*self.mem_dim, self.mem_dim)(nn.JoinTable(2){inputq, inputa}))
-    local module = nn.gModule({inputq, inputa}, {output})
-    return module
+    local pinput, qinput, qsizes = nn.Identity()(), nn.Identity()(), nn.Identity()(), nn.Identity()()
+
+    local qinput_pad = nn.Padding(2,1)(qinput)
+
+    local M_q = nn.BLinear(self.mem_dim, self.mem_dim)(qinput_pad)
+
+    local M_pq = nn.MM(false, true){pinput, M_q}
+
+    local alpha = nn.MaskedSoftMax(){M_pq, qsizes}
+
+    local q_wsum =  nn.MM(){alpha, qinput_pad}
+
+    --local match = nn.Dropout(self.dropoutP)(nn.ReLU()(nn.BLinear(2*self.mem_dim, 2*self.mem_dim)(nn.JoinTable(3){pinput, q_wsum})))
+    local match = nn.JoinTable(3){pinput, q_wsum}
+
+    local match_module = nn.gModule({pinput, qinput, qsizes}, {match})
+
+    return match_module
 end
 
 
 function compAggWebqspQsPos:new_sim_submul_module()
-    local inputq, inputa = nn.Identity()(), nn.Identity()()
-    local qa_sub = nn.Power(2)(nn.CSubTable(){inputq, inputa})
-    local qa_mul = nn.CMulTable(){inputq, inputa}
-    local join = nn.JoinTable(2){qa_sub, qa_mul}
-    local output = nn.ReLU()(nn.Linear(2*self.mem_dim, self.mem_dim)(join))
+    local pinput, qinput, qsizes = nn.Identity()(), nn.Identity()(), nn.Identity()(), nn.Identity()()
 
-    local module = nn.gModule({inputq, inputa}, {output})
-    return module
+    local qinput_pad = nn.Padding(2,1)(qinput)
+
+    local M_q = nn.BLinear(self.mem_dim, self.mem_dim)(qinput_pad)
+
+    local M_pq = nn.MM(false, true){pinput, M_q}
+
+    local alpha = nn.MaskedSoftMax(){M_pq, qsizes}
+
+    local q_wsum =  nn.MM(){alpha, qinput_pad}
+
+    --local match = nn.Dropout(self.dropoutP)(nn.ReLU()(nn.BLinear(2*self.mem_dim, 2*self.mem_dim)(nn.JoinTable(3){pinput, q_wsum})))
+    local match = nn.JoinTable(3){nn.CSubTable(){pinput, q_wsum}, nn.CMulTable(){pinput, q_wsum}}
+
+    local match_module = nn.gModule({pinput, qinput, qsizes}, {match})
+
+    return match_module
 end
 
 function compAggWebqspQsPos:new_sim_bilinear_module()
